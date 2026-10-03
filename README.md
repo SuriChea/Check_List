@@ -25,6 +25,17 @@ npm run dev
 
 `npm run db:push` syncs `prisma/schema.prisma` with PostgreSQL (the legacy `npm run migration:run` command is retained as an alias). `npm run seed` adds five sample Todo records and can be rerun without duplicating them. `npm install` generates Prisma Client automatically.
 
+## View database with Prisma Studio
+
+Run this from the `backend` directory to open a browser UI for the PostgreSQL database:
+
+```powershell
+cd backend
+npx prisma studio
+```
+
+Prisma Studio opens at `http://localhost:5555`. Select the `Todo` model to view and edit records in the `todos` table.
+
 The API listens on `http://localhost:3333`. Its endpoints are:
 
 | Method | Path | Behavior |
