@@ -20,7 +20,6 @@ export default Env.rules({
 	APP_KEY: Env.schema.string(),
 	APP_NAME: Env.schema.string(),
   DRIVE_DISK: Env.schema.enum(['local'] as const),
-	DB_CONNECTION: Env.schema.enum(['pg'] as const),
 	PG_HOST: Env.schema.string(),
 	PG_PORT: Env.schema.number(),
 	PG_USER: Env.schema.string(),

@@ -2,8 +2,7 @@
   "typescript": true,
   "commands": [
     "./commands",
-    "@adonisjs/core/build/commands/index.js",
-    "@adonisjs/lucid/build/commands"
+    "@adonisjs/core/build/commands/index.js"
   ],
   "exceptionHandlerNamespace": "App/Exceptions/Handler",
   "aliases": {
@@ -18,12 +17,15 @@
   ],
   "providers": [
     "./providers/AppProvider",
-    "@adonisjs/core",
-    "@adonisjs/lucid"
+    "@adonisjs/core"
   ],
   "metaFiles": [
     {
       "pattern": "public/**",
+      "reloadServer": false
+    },
+    {
+      "pattern": "prisma/**",
       "reloadServer": false
     }
   ]

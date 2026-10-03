@@ -2,7 +2,7 @@
 
 Todo List is a responsive React + TypeScript frontend backed by an AdonisJS 5 REST API and PostgreSQL. Todo records are stored in the database, so they remain available after refreshing the page.
 
-ยังทำไม่ได้ตอนนี้: บันทึกลง PostgreSQL หรือทดสอบ API จริงผ่าน Postman เพราะ PostgreSQL/backend ยังไม่ทำงาน ต้องเปิดฐานข้อมูล รัน migration และ start backend ก่อน
+การบันทึกจริงใช้ Prisma เชื่อมต่อ PostgreSQL; ต้องเปิด PostgreSQL และตั้งค่า `DATABASE_URL` ก่อนเริ่ม API ส่วน frontend mock mode ใช้ทดสอบหน้าจอได้โดยไม่ต้องเปิดฐานข้อมูล
 
 ## Requirements
 
@@ -11,19 +11,19 @@ Todo List is a responsive React + TypeScript frontend backed by an AdonisJS 5 RE
 
 ## PostgreSQL
 
-Create a database named `todo_app` and a PostgreSQL user with permission to connect and create tables. The sample backend environment expects `postgres` / `postgres`; change these values in `backend/.env` to match your local PostgreSQL setup.
+Create a database named `todo_app` and a PostgreSQL user with permission to connect and create tables. Set `PG_HOST`, `PG_PORT`, `PG_USER`, `PG_PASSWORD`, and `PG_DB_NAME` in `backend/.env`. `DATABASE_URL` is built from those values for Prisma CLI commands.
 
 ## Run the API
 
 ```powershell
 cd backend
 npm install
-npm run migration:run
+npm run db:push
 npm run seed
 npm run dev
 ```
 
-`npm run seed` เพิ่ม Todo ตัวอย่าง 5 รายการให้หน้าเว็บ โดยใช้ชื่อรายการเป็น key จึงรันซ้ำได้โดยไม่สร้างรายการซ้ำ
+`npm run db:push` syncs `prisma/schema.prisma` with PostgreSQL (the legacy `npm run migration:run` command is retained as an alias). `npm run seed` adds five sample Todo records and can be rerun without duplicating them. `npm install` generates Prisma Client automatically.
 
 The API listens on `http://localhost:3333`. Its endpoints are:
 
@@ -46,7 +46,7 @@ npm run dev
 
 Open the Vite URL printed in the terminal. The frontend defaults to `http://localhost:3333` for its API. To change it, copy `frontend/.env.example` to `frontend/.env` and update `VITE_API_URL`.
 
-For UI testing without PostgreSQL, `frontend/.env.local` enables mock mode with five sample todos stored in browser local storage. Restart the Vite dev server after changing environment values. To use the real API, set `VITE_USE_MOCK_API=false` in `frontend/.env.local` (or remove that local file).
+The local `frontend/.env.local` connects the UI to the real API. For UI testing without PostgreSQL, set `VITE_USE_MOCK_API=true` there to use five sample todos stored in browser local storage. Restart the Vite dev server after changing environment values.
 
 ## Test the API
 
