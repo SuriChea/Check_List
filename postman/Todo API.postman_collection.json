@@ -1,0 +1,113 @@
+{
+  "info": {
+    "_postman_id": "bcbd3107-2c62-4e71-ae92-1c293a0b584d",
+    "name": "Todo API",
+    "description": "CRUD and persistence checks for the AdonisJS Todo API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3333" },
+    { "key": "todoId", "value": "" },
+    { "key": "todoTitle", "value": "Postman persistence test" }
+  ],
+  "item": [
+    {
+      "name": "List todos",
+      "request": { "method": "GET", "url": "{{baseUrl}}/todos" },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('returns a list', function () {",
+          "  pm.response.to.have.status(200);",
+          "  pm.expect(pm.response.json()).to.be.an('array');",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "Create todo",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"{{todoTitle}}\"\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/todos"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('creates a todo', function () {",
+          "  pm.response.to.have.status(201);",
+          "  const todo = pm.response.json();",
+          "  pm.expect(todo.id).to.exist;",
+          "  pm.expect(todo.title).to.eql(pm.collectionVariables.get('todoTitle'));",
+          "  pm.expect(todo.isCompleted).to.eql(false);",
+          "  pm.collectionVariables.set('todoId', todo.id);",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "Read persisted todo",
+      "request": { "method": "GET", "url": "{{baseUrl}}/todos" },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('created todo is persisted and readable', function () {",
+          "  pm.response.to.have.status(200);",
+          "  const todos = pm.response.json();",
+          "  const todo = todos.find((item) => String(item.id) === String(pm.collectionVariables.get('todoId')));",
+          "  pm.expect(todo, 'created todo').to.exist;",
+          "  pm.expect(todo.title).to.eql(pm.collectionVariables.get('todoTitle'));",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "Update todo and mark complete",
+      "request": {
+        "method": "PUT",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"title\": \"{{todoTitle}} updated\",\n  \"isCompleted\": true\n}", "options": { "raw": { "language": "json" } } },
+        "url": "{{baseUrl}}/todos/{{todoId}}"
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('updates title and completion status', function () {",
+          "  pm.response.to.have.status(200);",
+          "  const todo = pm.response.json();",
+          "  pm.expect(todo.isCompleted).to.eql(true);",
+          "  pm.expect(todo.title).to.eql(pm.collectionVariables.get('todoTitle') + ' updated');",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "Delete todo",
+      "request": { "method": "DELETE", "url": "{{baseUrl}}/todos/{{todoId}}" },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('deletes todo', function () {",
+          "  pm.response.to.have.status(204);",
+          "});"
+        ] }
+      }]
+    },
+    {
+      "name": "Confirm deleted todo is absent",
+      "request": { "method": "GET", "url": "{{baseUrl}}/todos" },
+      "event": [{
+        "listen": "test",
+        "script": { "type": "text/javascript", "exec": [
+          "pm.test('deleted todo is no longer returned', function () {",
+          "  pm.response.to.have.status(200);",
+          "  const todos = pm.response.json();",
+          "  const todo = todos.find((item) => String(item.id) === String(pm.collectionVariables.get('todoId')));",
+          "  pm.expect(todo).to.not.exist;",
+          "});"
+        ] }
+      }]
+    }
+  ]
+}

@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+
+# Explicitly keep the workspace's Copilot customization private
+.github/
+
+# Generated output
+dist/
+dist-ssr/
+build/
+coverage/
+
+# Local environment files and secrets
+**/.env
+**/.env.*
+!**/.env.example
+
+# Logs and local tooling
+*.log
+.DS_Store
+.vscode/
+.idea/
